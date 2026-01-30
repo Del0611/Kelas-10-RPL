@@ -1,3 +1,5 @@
+
+```
 jeruk, apel = True, False
 print(jeruk and apel)
 
@@ -25,6 +27,7 @@ print(jeruk  != apel)
 jeruk, apel = False,True
 print(jeruk == apel)
 
+```
 
 
 
