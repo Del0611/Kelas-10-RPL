@@ -23,3 +23,10 @@ elif Nilaimu >= 60:
    print("D")
 else:
     print("E")
+
+
+
+nilai = 90
+absen = 75
+if nilai >= 80 and absen >= 70:
+    print("Lulus")
