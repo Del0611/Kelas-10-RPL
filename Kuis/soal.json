@@ -1,0 +1,12 @@
+[
+  {
+    "pertanyaan": "Apa kepanjangan LAN?",
+    "opsi": ["Local Area Network", "Large Area Network", "Long Area Network", "Line Area Network"],
+    "jawaban": "a"
+  },
+  {
+    "pertanyaan": "Perangkat jaringan yang digunakan untuk menghubungkan komputer adalah?",
+    "opsi": ["Mouse", "Switch", "Keyboard", "Printer"],
+    "jawaban": "b"
+  }
+]
