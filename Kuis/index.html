@@ -14,83 +14,86 @@
         .soal { margin-bottom: 20px; padding: 15px; background: #1f2937; border-radius: 10px; border-left: 5px solid #22c55e; }
         label { display: block; margin: 5px 0; cursor: pointer; }
         button { margin-top: 15px; padding: 12px; width: 100%; border: none; border-radius: 10px; background: linear-gradient(45deg, #22c55e, #16a34a); color: white; font-size: 16px; cursor: pointer; transition: 0.3s; }
-        button:hover { transform: scale(1.02); background: linear-gradient(45deg, #16a34a, #22c55e); }
+        button:hover { transform: scale(1.02); }
         .result { font-size: 20px; font-weight: bold; margin-top: 20px; padding: 15px; border-radius: 10px; background: #022c22; color: #4ade80; text-align: center; display: none; }
+        #status { text-align: center; color: #9ca3af; font-size: 0.9em; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>🔐 Kuis Terenkripsi</h2>
+    <div id="status">Status: Belum ada file</div>
 
     <label><b>Nama Peserta:</b></label>
     <input type="text" id="nama" placeholder="Masukkan nama Anda">
 
-    <label><b>Kunci Dekripsi (Password):</b></label>
-    <input type="password" id="kunci" placeholder="Masukkan kunci rahasia untuk membuka soal">
+    <label><b>Kunci Dekripsi:</b></label>
+    <input type="password" id="kunci" placeholder="Masukkan password soal">
 
-    <p><b>Upload file soal (JSON Terenkripsi):</b></p>
+    <p><b>Upload file soal (.txt / .json):</b></p>
     <input type="file" id="fileInput" accept=".txt, .json">
 
-    <form id="quizForm"></form>
+    <div id="quizForm"></div>
 
-    <button type="button" onclick="hitungNilai()" id="btnSubmit" style="display:none;">🚀 Kirim Jawaban</button>
+    <button type="button" onclick="hitungNilai()">🚀 Kirim Jawaban</button>
     <div class="result" id="hasil"></div>
 </div>
 
 <script>
 let dataSoal = [];
 
-// Event: Saat file di-upload
 document.getElementById('fileInput').addEventListener('change', function(event) {
     const file = event.target.files[0];
     const kunci = document.getElementById("kunci").value;
+    const statusDiv = document.getElementById("status");
 
-    if (!kunci) { alert("Masukkan kunci dekripsi terlebih dahulu!"); event.target.value = ""; return; }
+    if (!kunci) { alert("Masukkan kunci dekripsi dulu!"); event.target.value = ""; return; }
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
             const encryptedData = e.target.result;
-            // Proses Dekripsi
+            // Dekripsi
             const bytes = CryptoJS.AES.decrypt(encryptedData, kunci);
             const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
             
-            if (!decryptedString) throw new Error("Key salah");
+            if (!decryptedString) throw new Error();
             
             dataSoal = JSON.parse(decryptedString);
             tampilkanSoal();
-            document.getElementById("btnSubmit").style.display = "block";
-            alert("Soal berhasil dibuka!");
+            statusDiv.innerHTML = "Status: ✅ Soal berhasil dimuat!";
+            statusDiv.style.color = "#22c55e";
         } catch (err) {
-            alert("Gagal mendekripsi! Periksa kembali kunci atau format file.");
+            alert("Gagal! Kunci salah atau format file rusak.");
+            statusDiv.innerHTML = "Status: ❌ Gagal memuat soal";
+            statusDiv.style.color = "#ef4444";
         }
     };
     reader.readAsText(file);
 });
 
-// Render Soal ke HTML
 function tampilkanSoal() {
     let form = document.getElementById("quizForm");
     form.innerHTML = "";
     dataSoal.forEach((soal, index) => {
         let div = document.createElement("div");
         div.classList.add("soal");
-        let html = `<p><b>${index + 1}. ${soal.pertanyaan}</b></p>`;
+        div.innerHTML = `<p><b>${index + 1}. ${soal.pertanyaan}</b></p>`;
+        
         soal.opsi.forEach((opsi, i) => {
             let huruf = ['a','b','c','d'][i];
-            html += `<label><input type="radio" name="q${index}" value="${huruf}"> ${opsi}</label>`;
+            div.innerHTML += `<label><input type="radio" name="q${index}" value="${huruf}"> ${opsi}</label>`;
         });
-        div.innerHTML = html;
         form.appendChild(div);
     });
 }
 
-// Hitung Skor
 function hitungNilai() {
     const nama = document.getElementById("nama").value.trim();
     if (nama === "") { alert("Isi nama dulu!"); return; }
+    if (dataSoal.length === 0) { alert("Silakan upload file soal terlebih dahulu!"); return; }
 
     let skor = 0;
     let form = document.forms["quizForm"];
