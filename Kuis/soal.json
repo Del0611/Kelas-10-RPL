@@ -1,12 +1,258 @@
 [
   {
-    "pertanyaan": "Apa kepanjangan LAN?",
-    "opsi": ["Local Area Network", "Large Area Network", "Long Area Network", "Line Area Network"],
+    "pertanyaan": "Apa yang dimaksud dengan perangkat lunak (software)?",
+    "opsi": ["Perangkat keras komputer", "Sekumpulan instruksi untuk menjalankan komputer", "Bagian fisik komputer", "Jaringan komputer"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Berikut ini yang termasuk perangkat lunak sistem adalah?",
+    "opsi": ["Microsoft Word", "Google Chrome", "Windows", "Photoshop"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Software yang digunakan untuk membantu pekerjaan pengguna disebut?",
+    "opsi": ["System software", "Application software", "Programming software", "Utility software"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Tahap SDLC yang digunakan untuk menulis kode program adalah?",
+    "opsi": ["Planning", "Design", "Implementation", "Testing"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Siapakah yang bertugas menulis dan mengembangkan program?",
+    "opsi": ["User", "Operator", "Programmer", "Admin jaringan"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Bahasa pemrograman yang digunakan untuk tampilan website adalah?",
+    "opsi": ["Python", "Java", "HTML", "C++"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Programmer yang mengurus server dan database disebut?",
+    "opsi": ["Front-end developer", "Back-end developer", "Mobile developer", "Game developer"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Tool yang digunakan untuk menyimpan versi kode adalah?",
+    "opsi": ["MySQL", "Git", "Photoshop", "Excel"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Tahap SDLC yang bertujuan memastikan software bebas error adalah?",
+    "opsi": ["Testing", "Deployment", "Planning", "Maintenance"],
     "jawaban": "a"
   },
   {
-    "pertanyaan": "Perangkat jaringan yang digunakan untuk menghubungkan komputer adalah?",
-    "opsi": ["Mouse", "Switch", "Keyboard", "Printer"],
+    "pertanyaan": "Hubungan programmer dengan perangkat lunak adalah?",
+    "opsi": ["Programmer menggunakan software saja", "Programmer membuat perangkat lunak", "Software membuat programmer", "Tidak ada hubungan"],
     "jawaban": "b"
+  },
+
+  {
+    "pertanyaan": "Apa yang dimaksud dengan algoritma?",
+    "opsi": ["Bahasa pemrograman", "Langkah-langkah logis untuk menyelesaikan masalah", "Perangkat keras komputer", "Jaringan komputer"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Nama algoritma berasal dari tokoh siapa?",
+    "opsi": ["Newton", "Einstein", "Al-Khawarizmi", "Galileo"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Berikut yang termasuk ciri algoritma yang baik adalah?",
+    "opsi": ["Tidak jelas", "Tidak memiliki output", "Langkah tidak terbatas", "Memiliki input dan output"],
+    "jawaban": "d"
+  },
+  {
+    "pertanyaan": "Struktur algoritma yang dijalankan secara berurutan disebut?",
+    "opsi": ["Looping", "Selection", "Sequence", "Branching"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Percabangan dalam algoritma digunakan untuk?",
+    "opsi": ["Mengulang langkah", "Menentukan pilihan berdasarkan kondisi", "Menghentikan program", "Menampilkan output"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Perulangan (looping) digunakan untuk?",
+    "opsi": ["Menghentikan program", "Menjalankan langkah berulang kali", "Menentukan input", "Menampilkan output"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Penulisan algoritma yang menyerupai kode program disebut?",
+    "opsi": ["Narasi", "Flowchart", "Pseudocode", "Diagram"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Flowchart digunakan untuk?",
+    "opsi": ["Menulis kode program", "Menggambar alur logika algoritma", "Menyimpan data", "Menghitung nilai"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Algoritma harus memiliki sifat terbatas (finite), artinya?",
+    "opsi": ["Tidak pernah berhenti", "Memiliki langkah terbatas", "Tidak memiliki output", "Selalu berulang"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Pada algoritma ganjil genap, jika bilangan MOD 2 = 0 maka hasilnya?",
+    "opsi": ["Ganjil", "Genap", "Negatif", "Tidak diketahui"],
+    "jawaban": "b"
+  },
+
+  {
+    "pertanyaan": "Apa yang dimaksud dengan flowchart?",
+    "opsi": ["Bahasa pemrograman", "Diagram alur proses atau algoritma", "Perangkat keras", "Database"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Tujuan utama flowchart adalah?",
+    "opsi": ["Menulis kode program", "Menghapus data", "Memvisualisasikan alur program", "Menyimpan data"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Simbol untuk memulai dan mengakhiri flowchart adalah?",
+    "opsi": ["Persegi panjang", "Lingkaran / oval", "Segitiga", "Panah"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Simbol persegi panjang pada flowchart digunakan untuk?",
+    "opsi": ["Input/output", "Keputusan", "Proses", "Penghubung"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Simbol jajar genjang pada flowchart menunjukkan?",
+    "opsi": ["Proses", "Input/Output", "Keputusan", "Mulai"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Simbol berbentuk belah ketupat (diamond) digunakan untuk?",
+    "opsi": ["Mulai", "Proses", "Keputusan", "Output"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Flowchart sebaiknya disusun dari arah?",
+    "opsi": ["Bawah ke atas", "Kanan ke kiri", "Atas ke bawah", "Acak"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Dalam flowchart, panah digunakan untuk?",
+    "opsi": ["Menghapus langkah", "Menghubungkan alur proses", "Menentukan variabel", "Menghitung nilai"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Flowchart ganjil genap menggunakan konsep apa?",
+    "opsi": ["Perulangan", "Percabangan", "Urutan saja", "Input saja"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Flowchart perulangan digunakan untuk?",
+    "opsi": ["Menghentikan program", "Menjalankan proses berulang", "Menghapus data", "Menampilkan output saja"],
+    "jawaban": "b"
+  },
+
+
+  {
+    "pertanyaan": "Python termasuk bahasa pemrograman jenis apa?",
+    "opsi": ["Bahasa mesin", "Bahasa tingkat rendah", "Bahasa tingkat tinggi", "Bahasa rakitan"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Python disebut interpreted karena?",
+    "opsi": ["Harus dikompilasi dulu", "Langsung dijalankan baris per baris", "Tidak bisa dijalankan", "Hanya untuk web"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Berikut ini yang termasuk keunggulan Python adalah?",
+    "opsi": ["Sulit dipelajari", "Tidak gratis", "Sintaks sederhana", "Hanya untuk Windows"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Perintah untuk menampilkan output di Python adalah?",
+    "opsi": ["echo()", "print()", "show()", "output()"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Tipe data untuk bilangan bulat adalah?",
+    "opsi": ["float", "str", "int", "bool"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Tipe data untuk teks adalah?",
+    "opsi": ["int", "float", "str", "bool"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Nilai dari tipe data boolean adalah?",
+    "opsi": ["0 dan 1", "Ya dan Tidak", "True dan False", "Benar saja"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Ekstensi file Python adalah?",
+    "opsi": [".html", ".py", ".java", ".exe"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Operator logika AND akan bernilai True jika?",
+    "opsi": ["Salah satu True", "Semua True", "Semua False", "Salah satu False"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "List pada Python bersifat?",
+    "opsi": ["Immutable", "Tidak bisa diubah", "Mutable", "Hanya angka"],
+    "jawaban": "c"
+  },
+
+  {
+    "pertanyaan": "Percabangan dalam Python digunakan untuk?",
+    "opsi": ["Mengulang program", "Mengambil keputusan", "Menyimpan data", "Menghapus data"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Sintaks yang digunakan untuk percabangan sederhana adalah?",
+    "opsi": ["for", "while", "if", "loop"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Jika kondisi pada if salah, maka yang dijalankan adalah?",
+    "opsi": ["if", "else", "for", "while"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "elif digunakan untuk?",
+    "opsi": ["Mengulang", "Banyak kondisi", "Menghentikan program", "Menyimpan data"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Operator '==' berarti?",
+    "opsi": ["Tidak sama", "Lebih besar", "Sama dengan", "Kurang dari"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Operator logika AND akan bernilai True jika?",
+    "opsi": ["Salah satu benar", "Semua benar", "Semua salah", "Salah satu salah"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Perulangan dengan jumlah tertentu biasanya menggunakan?",
+    "opsi": ["if", "while", "for", "else"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Perulangan while berjalan selama?",
+    "opsi": ["Program selesai", "Kondisi salah", "Kondisi benar", "Tidak ada kondisi"],
+    "jawaban": "c"
+  },
+  {
+    "pertanyaan": "Perintah break berfungsi untuk?",
+    "opsi": ["Melanjutkan loop", "Menghentikan loop", "Mengulang loop", "Melewati loop"],
+    "jawaban": "b"
+  },
+  {
+    "pertanyaan": "Perintah continue digunakan untuk?",
+    "opsi": ["Menghentikan program", "Keluar dari loop", "Melewati satu iterasi", "Mengulang dari awal"],
+    "jawaban": "c"
   }
+  
 ]
