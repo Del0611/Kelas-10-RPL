@@ -1,225 +1,114 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kuis</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Terenkripsi</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
-<style>
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background: #0f172a;
-    color: #e5e7eb;
-    padding: 20px;
-}
-
-/* Container */
-.container {
-    max-width: 750px;
-    margin: auto;
-    background: #111827;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0,255,150,0.2);
-}
-
-/* Judul */
-h2 {
-    text-align: center;
-    color: #22c55e;
-}
-
-/* Input */
-input[type="text"],
-input[type="file"] {
-    padding: 10px;
-    width: 100%;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border: none;
-    background: #1f2937;
-    color: white;
-}
-
-/* Soal */
-.soal {
-    margin-bottom: 20px;
-    padding: 15px;
-    background: #1f2937;
-    border-radius: 10px;
-    border-left: 5px solid #22c55e;
-}
-
-/* Radio */
-label {
-    display: block;
-    margin: 5px 0;
-    cursor: pointer;
-}
-
-/* Button */
-button {
-    margin-top: 15px;
-    padding: 12px;
-    width: 100%;
-    border: none;
-    border-radius: 10px;
-    background: linear-gradient(45deg, #22c55e, #16a34a);
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-button:hover {
-    transform: scale(1.05);
-    background: linear-gradient(45deg, #16a34a, #22c55e);
-}
-
-/* Result */
-.result {
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 10px;
-    background: #022c22;
-    color: #4ade80;
-    text-align: center;
-}
-
-/* Animasi */
-.container {
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {opacity: 0; transform: translateY(10px);}
-    to {opacity: 1; transform: translateY(0);}
-}
-</style>
-
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e5e7eb; padding: 20px; }
+        .container { max-width: 750px; margin: auto; background: #111827; padding: 25px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,255,150,0.2); }
+        h2 { text-align: center; color: #22c55e; }
+        input[type="text"], input[type="file"], input[type="password"] { padding: 10px; width: 100%; margin-bottom: 15px; border-radius: 8px; border: none; background: #1f2937; color: white; box-sizing: border-box; }
+        .soal { margin-bottom: 20px; padding: 15px; background: #1f2937; border-radius: 10px; border-left: 5px solid #22c55e; }
+        label { display: block; margin: 5px 0; cursor: pointer; }
+        button { margin-top: 15px; padding: 12px; width: 100%; border: none; border-radius: 10px; background: linear-gradient(45deg, #22c55e, #16a34a); color: white; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        button:hover { transform: scale(1.05); }
+        .result { font-size: 20px; font-weight: bold; margin-top: 20px; padding: 15px; border-radius: 10px; background: #022c22; color: #4ade80; text-align: center; }
+    </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🧠 Kuis Soal</h2>
+    <h2>🔒 Kuis Terenkripsi</h2>
 
     <label><b>Nama Peserta:</b></label>
     <input type="text" id="nama" placeholder="Masukkan nama anda">
 
-    <p><b>Upload file soal (JSON):</b></p>
-    <input type="file" id="fileInput" accept=".json">
+    <label><b>Kunci Dekripsi (Password):</b></label>
+    <input type="password" id="kunci" placeholder="Masukkan kunci rahasia">
+
+    <p><b>Upload file soal (JSON Terenkripsi):</b></p>
+    <input type="file" id="fileInput" accept=".txt, .json">
 
     <form id="quizForm"></form>
 
     <button type="button" onclick="hitungNilai()">🚀 Kirim Jawaban</button>
-
     <div class="result" id="hasil"></div>
 </div>
 
 <script>
 let dataSoal = [];
 
-// Load nama
+// Load nama saat buka halaman
 window.onload = function() {
     const namaTersimpan = localStorage.getItem("namaPeserta");
-    if (namaTersimpan) {
-        document.getElementById("nama").value = namaTersimpan;
-    }
+    if (namaTersimpan) document.getElementById("nama").value = namaTersimpan;
 };
 
-// Simpan nama
-function simpanNama() {
-    const nama = document.getElementById("nama").value;
-    localStorage.setItem("namaPeserta", nama);
-}
-
-// Import JSON
+// Import dan Dekripsi File
 document.getElementById('fileInput').addEventListener('change', function(event) {
     const file = event.target.files[0];
+    const kunci = document.getElementById("kunci").value;
+
+    if (!kunci) {
+        alert("Masukkan kunci dekripsi terlebih dahulu!");
+        event.target.value = ""; // Reset input file
+        return;
+    }
     if (!file) return;
 
     const reader = new FileReader();
-
     reader.onload = function(e) {
         try {
-            dataSoal = JSON.parse(e.target.result);
+            // Proses Dekripsi
+            const encryptedData = e.target.result;
+            const bytes = CryptoJS.AES.decrypt(encryptedData, kunci);
+            const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
+            
+            // Cek apakah hasil dekripsi valid JSON
+            dataSoal = JSON.parse(decryptedString);
             tampilkanSoal();
-        } catch {
-            alert("Format JSON salah!");
+            alert("File berhasil didekripsi!");
+        } catch (err) {
+            alert("Gagal mendekripsi! Periksa kembali kunci atau format file.");
         }
     };
-
     reader.readAsText(file);
 });
 
-// Tampilkan soal
 function tampilkanSoal() {
     let form = document.getElementById("quizForm");
     form.innerHTML = "";
-
     dataSoal.forEach((soal, index) => {
         let div = document.createElement("div");
         div.classList.add("soal");
-
         let html = `<p><b>${index + 1}. ${soal.pertanyaan}</b></p>`;
-
         soal.opsi.forEach((opsi, i) => {
             let huruf = ['a','b','c','d'][i];
-            html += `
-                <label>
-                    <input type="radio" name="q${index}" value="${huruf}">
-                    ${opsi}
-                </label>
-            `;
+            html += `<label><input type="radio" name="q${index}" value="${huruf}"> ${opsi}</label>`;
         });
-
         div.innerHTML = html;
         form.appendChild(div);
     });
 }
 
-// Hitung nilai
 function hitungNilai() {
     const nama = document.getElementById("nama").value.trim();
+    if (nama === "") { alert("Isi nama dulu!"); return; }
+    localStorage.setItem("namaPeserta", nama);
 
-    if (nama === "") {
-        alert("Isi nama dulu!");
-        return;
-    }
-
-    simpanNama();
-
-    if (dataSoal.length === 0) {
-        alert("Upload soal dulu!");
-        return;
-    }
+    if (dataSoal.length === 0) { alert("Upload dan dekripsi soal dulu!"); return; }
 
     let skor = 0;
     let form = document.forms["quizForm"];
-
     dataSoal.forEach((soal, index) => {
-        let jawabanUser = form[`q${index}`]?.value;
-
-        if (jawabanUser === soal.jawaban) {
-            skor++;
-        }
+        if (form[`q${index}`]?.value === soal.jawaban) skor++;
     });
 
     let nilai = (skor / dataSoal.length) * 100;
-
-    const hasilData = {
-        nama,
-        skor,
-        total: dataSoal.length,
-        nilai: nilai.toFixed(2)
-    };
-
-    localStorage.setItem("hasilKuis", JSON.stringify(hasilData));
-
-    document.getElementById("hasil").innerHTML =
-        `👤 ${nama}<br>🎯 Nilai: ${nilai.toFixed(2)}<br>✅ Benar: ${skor}/${dataSoal.length}`;
+    document.getElementById("hasil").innerHTML = `👤 ${nama}<br>🎯 Nilai: ${nilai.toFixed(2)}<br>✅ Benar: ${skor}/${dataSoal.length}`;
 }
 </script>
 
