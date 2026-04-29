@@ -23,13 +23,13 @@
 
 <div class="container">
     <h2>🔐 Kuis Terenkripsi</h2>
-    <div id="status">Status: Belum ada file</div>
+    <div id="status">Status: Menunggu file...</div>
 
     <label><b>Nama Peserta:</b></label>
     <input type="text" id="nama" placeholder="Masukkan nama Anda">
 
     <label><b>Kunci Dekripsi:</b></label>
-    <input type="password" id="kunci" placeholder="Masukkan password soal">
+    <input type="password" id="kunci" placeholder="Masukkan password (ikan)">
 
     <p><b>Upload file soal (.txt / .json):</b></p>
     <input type="file" id="fileInput" accept=".txt, .json">
@@ -54,19 +54,23 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
-            const encryptedData = e.target.result;
+            // FIX: Menghapus semua spasi, enter, dan baris baru agar dekripsi tidak error
+            const rawData = e.target.result;
+            const encryptedData = rawData.replace(/\s/g, ''); 
+            
             // Dekripsi
             const bytes = CryptoJS.AES.decrypt(encryptedData, kunci);
             const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
             
-            if (!decryptedString) throw new Error();
+            if (!decryptedString) throw new Error("Dekripsi gagal, kunci salah.");
             
             dataSoal = JSON.parse(decryptedString);
             tampilkanSoal();
             statusDiv.innerHTML = "Status: ✅ Soal berhasil dimuat!";
             statusDiv.style.color = "#22c55e";
         } catch (err) {
-            alert("Gagal! Kunci salah atau format file rusak.");
+            console.log("Error:", err); // Cek F12 jika masih gagal
+            alert("Gagal! Kunci salah atau format file rusak. Pastikan file tidak mengandung spasi/enter tambahan.");
             statusDiv.innerHTML = "Status: ❌ Gagal memuat soal";
             statusDiv.style.color = "#ef4444";
         }
