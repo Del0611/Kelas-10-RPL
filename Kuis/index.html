@@ -7,40 +7,95 @@
 
 <style>
 body {
-    font-family: Arial;
-    background: #f4f4f4;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: #e5e7eb;
     padding: 20px;
 }
 
+/* Container */
 .container {
-    max-width: 700px;
+    max-width: 750px;
     margin: auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
+    background: #111827;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,255,150,0.2);
 }
 
-button {
-    margin-top: 15px;
-    padding: 10px 15px;
+/* Judul */
+h2 {
+    text-align: center;
+    color: #22c55e;
+}
+
+/* Input */
+input[type="text"],
+input[type="file"] {
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: none;
+    background: #1f2937;
+    color: white;
+}
+
+/* Soal */
+.soal {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #1f2937;
+    border-radius: 10px;
+    border-left: 5px solid #22c55e;
+}
+
+/* Radio */
+label {
+    display: block;
+    margin: 5px 0;
     cursor: pointer;
 }
 
+/* Button */
+button {
+    margin-top: 15px;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(45deg, #22c55e, #16a34a);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.05);
+    background: linear-gradient(45deg, #16a34a, #22c55e);
+}
+
+/* Result */
 .result {
     font-size: 20px;
     font-weight: bold;
     margin-top: 20px;
-    color: green;
+    padding: 15px;
+    border-radius: 10px;
+    background: #022c22;
+    color: #4ade80;
+    text-align: center;
 }
 
-.soal {
-    margin-bottom: 20px;
+/* Animasi */
+.container {
+    animation: fadeIn 0.5s ease-in-out;
 }
 
-input[type="text"] {
-    padding: 8px;
-    width: 100%;
-    margin-bottom: 10px;
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(10px);}
+    to {opacity: 1; transform: translateY(0);}
 }
 </style>
 
@@ -48,17 +103,17 @@ input[type="text"] {
 <body>
 
 <div class="container">
-    <h2>Kuis dengan Import Soal</h2>
+    <h2>🧠 Kuis Import Soal</h2>
 
     <label><b>Nama Peserta:</b></label>
     <input type="text" id="nama" placeholder="Masukkan nama anda">
 
-    <p><b>Upload file soal (format JSON):</b></p>
+    <p><b>Upload file soal (JSON):</b></p>
     <input type="file" id="fileInput" accept=".json">
 
     <form id="quizForm"></form>
 
-    <button type="button" onclick="hitungNilai()">Kirim Jawaban</button>
+    <button type="button" onclick="hitungNilai()">🚀 Kirim Jawaban</button>
 
     <div class="result" id="hasil"></div>
 </div>
@@ -66,7 +121,7 @@ input[type="text"] {
 <script>
 let dataSoal = [];
 
-// Load nama saat halaman dibuka
+// Load nama
 window.onload = function() {
     const namaTersimpan = localStorage.getItem("namaPeserta");
     if (namaTersimpan) {
@@ -80,7 +135,7 @@ function simpanNama() {
     localStorage.setItem("namaPeserta", nama);
 }
 
-// Import file JSON
+// Import JSON
 document.getElementById('fileInput').addEventListener('change', function(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -91,7 +146,7 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
         try {
             dataSoal = JSON.parse(e.target.result);
             tampilkanSoal();
-        } catch (error) {
+        } catch {
             alert("Format JSON salah!");
         }
     };
@@ -116,7 +171,7 @@ function tampilkanSoal() {
                 <label>
                     <input type="radio" name="q${index}" value="${huruf}">
                     ${opsi}
-                </label><br>
+                </label>
             `;
         });
 
@@ -130,14 +185,14 @@ function hitungNilai() {
     const nama = document.getElementById("nama").value.trim();
 
     if (nama === "") {
-        alert("Silakan isi nama terlebih dahulu!");
+        alert("Isi nama dulu!");
         return;
     }
 
     simpanNama();
 
     if (dataSoal.length === 0) {
-        alert("Silakan upload soal terlebih dahulu!");
+        alert("Upload soal dulu!");
         return;
     }
 
@@ -154,10 +209,9 @@ function hitungNilai() {
 
     let nilai = (skor / dataSoal.length) * 100;
 
-    // Simpan hasil
     const hasilData = {
-        nama: nama,
-        skor: skor,
+        nama,
+        skor,
         total: dataSoal.length,
         nilai: nilai.toFixed(2)
     };
@@ -165,7 +219,7 @@ function hitungNilai() {
     localStorage.setItem("hasilKuis", JSON.stringify(hasilData));
 
     document.getElementById("hasil").innerHTML =
-        `Nama: ${nama}<br>Nilai: ${nilai.toFixed(2)} (Benar: ${skor} dari ${dataSoal.length})`;
+        `👤 ${nama}<br>🎯 Nilai: ${nilai.toFixed(2)}<br>✅ Benar: ${skor}/${dataSoal.length}`;
 }
 </script>
 
