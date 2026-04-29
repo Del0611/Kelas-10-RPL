@@ -36,6 +36,12 @@ button {
 .soal {
     margin-bottom: 20px;
 }
+
+input[type="text"] {
+    padding: 8px;
+    width: 100%;
+    margin-bottom: 10px;
+}
 </style>
 
 </head>
@@ -43,6 +49,9 @@ button {
 
 <div class="container">
     <h2>Kuis dengan Import Soal</h2>
+
+    <label><b>Nama Peserta:</b></label>
+    <input type="text" id="nama" placeholder="Masukkan nama anda">
 
     <p><b>Upload file soal (format JSON):</b></p>
     <input type="file" id="fileInput" accept=".json">
@@ -56,6 +65,20 @@ button {
 
 <script>
 let dataSoal = [];
+
+// Load nama saat halaman dibuka
+window.onload = function() {
+    const namaTersimpan = localStorage.getItem("namaPeserta");
+    if (namaTersimpan) {
+        document.getElementById("nama").value = namaTersimpan;
+    }
+};
+
+// Simpan nama
+function simpanNama() {
+    const nama = document.getElementById("nama").value;
+    localStorage.setItem("namaPeserta", nama);
+}
 
 // Import file JSON
 document.getElementById('fileInput').addEventListener('change', function(event) {
@@ -76,7 +99,7 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
     reader.readAsText(file);
 });
 
-// Tampilkan soal ke halaman
+// Tampilkan soal
 function tampilkanSoal() {
     let form = document.getElementById("quizForm");
     form.innerHTML = "";
@@ -104,6 +127,15 @@ function tampilkanSoal() {
 
 // Hitung nilai
 function hitungNilai() {
+    const nama = document.getElementById("nama").value.trim();
+
+    if (nama === "") {
+        alert("Silakan isi nama terlebih dahulu!");
+        return;
+    }
+
+    simpanNama();
+
     if (dataSoal.length === 0) {
         alert("Silakan upload soal terlebih dahulu!");
         return;
@@ -122,8 +154,18 @@ function hitungNilai() {
 
     let nilai = (skor / dataSoal.length) * 100;
 
+    // Simpan hasil
+    const hasilData = {
+        nama: nama,
+        skor: skor,
+        total: dataSoal.length,
+        nilai: nilai.toFixed(2)
+    };
+
+    localStorage.setItem("hasilKuis", JSON.stringify(hasilData));
+
     document.getElementById("hasil").innerHTML =
-        `Nilai Anda: ${nilai.toFixed(2)} (Benar: ${skor} dari ${dataSoal.length})`;
+        `Nama: ${nama}<br>Nilai: ${nilai.toFixed(2)} (Benar: ${skor} dari ${dataSoal.length})`;
 }
 </script>
 
