@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis Import Soal</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f4f4f4;
+    padding: 20px;
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+button {
+    margin-top: 15px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.result {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: green;
+}
+
+.soal {
+    margin-bottom: 20px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+    <h2>Kuis dengan Import Soal</h2>
+
+    <p><b>Upload file soal (format JSON):</b></p>
+    <input type="file" id="fileInput" accept=".json">
+
+    <form id="quizForm"></form>
+
+    <button type="button" onclick="hitungNilai()">Kirim Jawaban</button>
+
+    <div class="result" id="hasil"></div>
+</div>
+
+<script>
+let dataSoal = [];
+
+// Import file JSON
+document.getElementById('fileInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        try {
+            dataSoal = JSON.parse(e.target.result);
+            tampilkanSoal();
+        } catch (error) {
+            alert("Format JSON salah!");
+        }
+    };
+
+    reader.readAsText(file);
+});
+
+// Tampilkan soal ke halaman
+function tampilkanSoal() {
+    let form = document.getElementById("quizForm");
+    form.innerHTML = "";
+
+    dataSoal.forEach((soal, index) => {
+        let div = document.createElement("div");
+        div.classList.add("soal");
+
+        let html = `<p><b>${index + 1}. ${soal.pertanyaan}</b></p>`;
+
+        soal.opsi.forEach((opsi, i) => {
+            let huruf = ['a','b','c','d'][i];
+            html += `
+                <label>
+                    <input type="radio" name="q${index}" value="${huruf}">
+                    ${opsi}
+                </label><br>
+            `;
+        });
+
+        div.innerHTML = html;
+        form.appendChild(div);
+    });
+}
+
+// Hitung nilai
+function hitungNilai() {
+    if (dataSoal.length === 0) {
+        alert("Silakan upload soal terlebih dahulu!");
+        return;
+    }
+
+    let skor = 0;
+    let form = document.forms["quizForm"];
+
+    dataSoal.forEach((soal, index) => {
+        let jawabanUser = form[`q${index}`]?.value;
+
+        if (jawabanUser === soal.jawaban) {
+            skor++;
+        }
+    });
+
+    let nilai = (skor / dataSoal.length) * 100;
+
+    document.getElementById("hasil").innerHTML =
+        `Nilai Anda: ${nilai.toFixed(2)} (Benar: ${skor} dari ${dataSoal.length})`;
+}
+</script>
+
+</body>
+</html>
