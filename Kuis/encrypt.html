@@ -5,12 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Encrypt Soal</title>
 
+<!-- CryptoJS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
 <style>
-body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e5e7eb; padding: 20px; }
-.container { max-width: 750px; margin: auto; background: #111827; padding: 25px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,255,150,0.2); }
-h2 { text-align: center; color: #22c55e; }
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: #e5e7eb;
+    padding: 20px;
+}
+
+.container {
+    max-width: 750px;
+    margin: auto;
+    background: #111827;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,255,150,0.2);
+}
+
+h2 {
+    text-align: center;
+    color: #22c55e;
+}
+
 input[type="file"], input[type="password"] {
     padding: 10px;
     width: 100%;
@@ -20,6 +39,7 @@ input[type="file"], input[type="password"] {
     background: #1f2937;
     color: white;
 }
+
 button {
     margin-top: 15px;
     padding: 12px;
@@ -31,7 +51,11 @@ button {
     font-size: 16px;
     cursor: pointer;
 }
-button:hover { transform: scale(1.02); }
+
+button:hover {
+    transform: scale(1.02);
+}
+
 .result {
     margin-top: 20px;
     padding: 15px;
@@ -41,6 +65,7 @@ button:hover { transform: scale(1.02); }
     text-align: center;
     display: none;
 }
+
 a {
     color: #22c55e;
     text-decoration: none;
@@ -71,8 +96,8 @@ a {
 
 <script>
 function encryptFile() {
-    const fileInput = document.getElementById("fileInput");
-    const file = fileInput.files[0];
+
+    const file = document.getElementById("fileInput").files[0];
     const kunci = document.getElementById("kunci").value;
 
     if (!file) {
@@ -88,45 +113,56 @@ function encryptFile() {
     const reader = new FileReader();
 
     reader.onload = function(e) {
-        const text = e.target.result.trim();
-
-        if (!text) {
-            alert("File kosong!");
-            return;
-        }
-
-        // 🔍 Coba cek JSON (tidak wajib)
         try {
-            JSON.parse(text);
-        } catch (err) {
-            console.warn("File bukan JSON valid, tetap dienkripsi...");
+            let text = e.target.result;
+
+            if (!text || text.trim() === "") {
+                alert("File kosong!");
+                return;
+            }
+
+            text = text.trim();
+
+            // 🔍 Validasi JSON (WAJIB BIAR AMAN)
+            try {
+                JSON.parse(text);
+            } catch (err) {
+                alert("❌ Format JSON tidak valid!\nPeriksa file soal.");
+                console.error(err);
+                return;
+            }
+
+            // 🔐 ENCRYPT AES (harus sama dengan decrypt)
+            const encrypted = CryptoJS.AES.encrypt(text, kunci).toString();
+
+            // 💾 Download file
+            const blob = new Blob([encrypted], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "soal_encrypted.txt";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            // 🟢 Notifikasi
+            const hasil = document.getElementById("hasil");
+            hasil.style.display = "block";
+            hasil.innerHTML = "✅ File berhasil dienkripsi & didownload!";
+
+        } catch (error) {
+            console.error(error);
+            alert("❌ Terjadi kesalahan saat encrypt!");
         }
-
-        // 🔐 Encrypt AES
-        const encrypted = CryptoJS.AES.encrypt(text, kunci).toString();
-
-        // 💾 Download file hasil
-        const blob = new Blob([encrypted], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "soal_encrypted.txt";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        // 🟢 Notifikasi
-        const hasil = document.getElementById("hasil");
-        hasil.style.display = "block";
-        hasil.innerHTML = "✅ File berhasil dienkripsi & didownload!";
     };
 
     reader.onerror = function() {
         alert("Gagal membaca file!");
     };
 
-    reader.readAsText(file);
+    // 🔥 penting: pakai UTF-8
+    reader.readAsText(file, "UTF-8");
 }
 </script>
 
