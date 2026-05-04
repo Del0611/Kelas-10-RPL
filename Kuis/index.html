@@ -4,110 +4,171 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kuis Terenkripsi</title>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e5e7eb; padding: 20px; }
         .container { max-width: 750px; margin: auto; background: #111827; padding: 25px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,255,150,0.2); }
         h2 { text-align: center; color: #22c55e; }
-        input[type="text"], input[type="password"], input[type="file"] { padding: 10px; width: 100%; margin-bottom: 15px; border-radius: 8px; border: none; background: #1f2937; color: white; box-sizing: border-box; }
-        .soal { margin-bottom: 20px; padding: 15px; background: #1f2937; border-radius: 10px; border-left: 5px solid #22c55e; }
+        input, button {
+            padding: 10px; width: 100%; margin-bottom: 15px;
+            border-radius: 8px; border: none;
+            background: #1f2937; color: white;
+        }
+        button {
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+            cursor: pointer;
+        }
+        .soal {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #1f2937;
+            border-radius: 10px;
+            border-left: 5px solid #22c55e;
+        }
         label { display: block; margin: 5px 0; cursor: pointer; }
-        button { margin-top: 15px; padding: 12px; width: 100%; border: none; border-radius: 10px; background: linear-gradient(45deg, #22c55e, #16a34a); color: white; font-size: 16px; cursor: pointer; transition: 0.3s; }
-        button:hover { transform: scale(1.02); }
-        .result { font-size: 20px; font-weight: bold; margin-top: 20px; padding: 15px; border-radius: 10px; background: #022c22; color: #4ade80; text-align: center; display: none; }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #022c22;
+            color: #4ade80;
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
+
 <body>
 
 <div class="container">
 
     <a href="encrypt.html">
-    <button>🔒 Halaman Encrypt Soal</button>
+        <button>🔒 Halaman Encrypt Soal</button>
     </a>
-    
+
     <h2>🔐 Kuis Terenkripsi</h2>
-    
-    <label><b>Nama Peserta:</b></label>
-    <input type="text" id="nama" placeholder="Masukkan nama Anda">
 
-    <label><b>Kunci Dekripsi:</b></label>
-    <input type="password" id="kunci" placeholder="Masukkan password">
+    <input type="text" id="nama" placeholder="Nama Peserta">
+    <input type="password" id="kunci" placeholder="Masukkan Password">
 
-    <p><b>Upload file (.txt):</b></p>
-    <input type="file" id="fileInput">
+    <input type="file" id="fileInput" accept=".txt">
 
     <form id="quizForm"></form>
-    
-    <button id="btnSubmit" style="display:none;" onclick="hitungNilai()">🚀 Kirim Jawaban</button>
+
+    <button id="btnLoad">🔓 Load Soal</button>
+    <button id="btnSubmit" style="display:none;">🚀 Kirim Jawaban</button>
+
     <div class="result" id="hasil"></div>
+
 </div>
 
 <script>
 let dataSoal = [];
 
-document.getElementById('fileInput').addEventListener('change', function(event) {
-    const file = event.target.files[0];
+// 🔓 LOAD + DECRYPT
+document.getElementById("btnLoad").addEventListener("click", function () {
+
+    const file = document.getElementById("fileInput").files[0];
     const kunci = document.getElementById("kunci").value;
 
-    if (!kunci) { alert("Masukkan kunci dulu!"); event.target.value = ""; return; }
-    if (!file) return;
+    if (!file) {
+        alert("Upload file dulu!");
+        return;
+    }
+
+    if (!kunci) {
+        alert("Masukkan password!");
+        return;
+    }
 
     const reader = new FileReader();
-    reader.readAsText(file); // Membaca file sebagai teks (Base64)
 
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         try {
             const encryptedData = e.target.result.trim();
-            
-            // Dekripsi AES
-            const decrypted = CryptoJS.AES.decrypt(encryptedData, kunci);
-            const decryptedString = decrypted.toString(CryptoJS.enc.Utf8);
-            
-            if (!decryptedString) throw new Error("Gagal");
-            
+
+            // 🔐 decrypt AES
+            const bytes = CryptoJS.AES.decrypt(encryptedData, kunci);
+            const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
+
+            console.log("HASIL:", decryptedString);
+
+            if (!decryptedString) {
+                throw new Error("Password salah atau file rusak!");
+            }
+
             dataSoal = JSON.parse(decryptedString);
-            alert("Berhasil Dekripsi!");
+
+            alert("✅ Berhasil membuka soal!");
+
             tampilkanSoal();
             document.getElementById("btnSubmit").style.display = "block";
+
         } catch (err) {
-            alert("Gagal Dekripsi! Pastikan kunci benar dan file valid.");
+            console.error(err);
+            alert("❌ Gagal decrypt! Password salah / file bukan hasil encrypt.");
         }
     };
+
+    reader.readAsText(file);
 });
 
+// 📄 TAMPILKAN SOAL
 function tampilkanSoal() {
     let form = document.getElementById("quizForm");
     form.innerHTML = "";
+
     dataSoal.forEach((soal, index) => {
         let div = document.createElement("div");
         div.className = "soal";
+
         div.innerHTML = `<p><b>${index + 1}. ${soal.pertanyaan}</b></p>`;
+
         soal.opsi.forEach((ops, i) => {
             let huruf = ['a','b','c','d'][i];
-            div.innerHTML += `<label><input type="radio" name="q${index}" value="${huruf}"> ${ops}</label>`;
+            div.innerHTML += `
+                <label>
+                    <input type="radio" name="q${index}" value="${huruf}">
+                    ${ops}
+                </label>
+            `;
         });
+
         form.appendChild(div);
     });
 }
 
-function hitungNilai() {
+// 🎯 HITUNG NILAI
+document.getElementById("btnSubmit").addEventListener("click", function () {
+
     const nama = document.getElementById("nama").value.trim();
-    if (!nama) { alert("Masukkan nama terlebih dahulu!"); return; }
-    
+
+    if (!nama) {
+        alert("Masukkan nama!");
+        return;
+    }
+
     let skor = 0;
     let form = document.forms["quizForm"];
-    
+
     dataSoal.forEach((soal, index) => {
         let jawabanUser = form[`q${index}`]?.value;
         if (jawabanUser === soal.jawaban) skor++;
     });
 
     let nilai = (skor / dataSoal.length) * 100;
-    const hasilDiv = document.getElementById("hasil");
-    hasilDiv.style.display = "block";
-    hasilDiv.innerHTML = `👤 ${nama}<br>🎯 Nilai: ${nilai.toFixed(2)}<br>✅ Benar: ${skor}/${dataSoal.length}`;
-}
+
+    const hasil = document.getElementById("hasil");
+    hasil.style.display = "block";
+    hasil.innerHTML = `
+        👤 ${nama}<br>
+        🎯 Nilai: ${nilai.toFixed(2)}<br>
+        ✅ Benar: ${skor}/${dataSoal.length}
+    `;
+});
 </script>
+
 </body>
 </html>
