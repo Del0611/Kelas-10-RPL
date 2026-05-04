@@ -11,10 +11,43 @@
 body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e5e7eb; padding: 20px; }
 .container { max-width: 750px; margin: auto; background: #111827; padding: 25px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,255,150,0.2); }
 h2 { text-align: center; color: #22c55e; }
-input[type="file"], input[type="password"] { padding: 10px; width: 100%; margin-bottom: 15px; border-radius: 8px; border: none; background: #1f2937; color: white; }
-button { margin-top: 15px; padding: 12px; width: 100%; border: none; border-radius: 10px; background: linear-gradient(45deg, #22c55e, #16a34a); color: white; font-size: 16px; cursor: pointer; }
-.result { margin-top: 20px; padding: 15px; border-radius: 10px; background: #022c22; color: #4ade80; text-align: center; display: none; }
-a { color: #22c55e; text-decoration: none; display: block; text-align: center; margin-top: 10px; }
+input[type="file"], input[type="password"] {
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: none;
+    background: #1f2937;
+    color: white;
+}
+button {
+    margin-top: 15px;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(45deg, #22c55e, #16a34a);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+button:hover { transform: scale(1.02); }
+.result {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    background: #022c22;
+    color: #4ade80;
+    text-align: center;
+    display: none;
+}
+a {
+    color: #22c55e;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+}
 </style>
 </head>
 
@@ -24,7 +57,7 @@ a { color: #22c55e; text-decoration: none; display: block; text-align: center; m
     <h2>🔒 Encrypt Soal</h2>
 
     <p><b>Upload file soal (.json / .txt):</b></p>
-    <input type="file" id="fileInput">
+    <input type="file" id="fileInput" accept=".json,.txt">
 
     <label><b>Password Enkripsi:</b></label>
     <input type="password" id="kunci" placeholder="Masukkan password">
@@ -38,7 +71,8 @@ a { color: #22c55e; text-decoration: none; display: block; text-align: center; m
 
 <script>
 function encryptFile() {
-    const file = document.getElementById("fileInput").files[0];
+    const fileInput = document.getElementById("fileInput");
+    const file = fileInput.files[0];
     const kunci = document.getElementById("kunci").value;
 
     if (!file) {
@@ -52,34 +86,47 @@ function encryptFile() {
     }
 
     const reader = new FileReader();
-    reader.readAsText(file);
 
     reader.onload = function(e) {
-        try {
-            const text = e.target.result;
+        const text = e.target.result.trim();
 
-            // Validasi JSON
-            JSON.parse(text);
-
-            // Encrypt AES
-            const encrypted = CryptoJS.AES.encrypt(text, kunci).toString();
-
-            // Download file
-            const blob = new Blob([encrypted], { type: "text/plain" });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "soal_encrypted.txt";
-            a.click();
-
-            const hasil = document.getElementById("hasil");
-            hasil.style.display = "block";
-            hasil.innerHTML = "✅ Soal berhasil dienkripsi & didownload!";
-        } catch (err) {
-            alert("Format file harus JSON yang valid!");
+        if (!text) {
+            alert("File kosong!");
+            return;
         }
+
+        // 🔍 Coba cek JSON (tidak wajib)
+        try {
+            JSON.parse(text);
+        } catch (err) {
+            console.warn("File bukan JSON valid, tetap dienkripsi...");
+        }
+
+        // 🔐 Encrypt AES
+        const encrypted = CryptoJS.AES.encrypt(text, kunci).toString();
+
+        // 💾 Download file hasil
+        const blob = new Blob([encrypted], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "soal_encrypted.txt";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        // 🟢 Notifikasi
+        const hasil = document.getElementById("hasil");
+        hasil.style.display = "block";
+        hasil.innerHTML = "✅ File berhasil dienkripsi & didownload!";
     };
+
+    reader.onerror = function() {
+        alert("Gagal membaca file!");
+    };
+
+    reader.readAsText(file);
 }
 </script>
 
