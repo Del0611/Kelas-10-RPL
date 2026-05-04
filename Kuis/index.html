@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kuis Terenkripsi</title>
 
+    <!-- CryptoJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <style>
@@ -124,17 +125,25 @@ document.getElementById("btnLoad").addEventListener("click", function () {
         try {
             let encryptedData = e.target.result;
 
-            // 🔥 bersihkan whitespace (biar tidak error)
-            encryptedData = encryptedData.replace(/\s/g, "");
+            // ❗ JANGAN HAPUS / UBAH DATA
+            // encryptedData = encryptedData.replace(/\s/g, "");
 
-            // 🔐 decrypt AES
+            // 🔐 DECRYPT
             const bytes = CryptoJS.AES.decrypt(encryptedData, kunci);
             const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
 
             console.log("HASIL DECRYPT:", decryptedString);
 
+            // ❗ VALIDASI
             if (!decryptedString) {
-                throw new Error("Decrypt kosong!");
+                alert("❌ Decrypt gagal! Password salah atau file rusak.");
+                return;
+            }
+
+            if (!decryptedString.startsWith("[") && !decryptedString.startsWith("{")) {
+                alert("❌ Format bukan JSON!");
+                console.log(decryptedString);
+                return;
             }
 
             dataSoal = JSON.parse(decryptedString);
@@ -146,11 +155,15 @@ document.getElementById("btnLoad").addEventListener("click", function () {
 
         } catch (err) {
             console.error(err);
-            alert("❌ Gagal decrypt!\n\nKemungkinan:\n- Password salah\n- File rusak\n- Bukan hasil encrypt");
+            alert("❌ Gagal decrypt!\n\nKemungkinan:\n- Password salah\n- File rusak\n- Format JSON salah");
         }
     };
 
-    reader.readAsText(file);
+    reader.onerror = function () {
+        alert("Gagal membaca file!");
+    };
+
+    reader.readAsText(file, "UTF-8");
 });
 
 
