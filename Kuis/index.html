@@ -1,109 +1,152 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kuis Terenkripsi</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis Terenkripsi</title>
 
-    <!-- CryptoJS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<!-- CryptoJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #0f172a;
-            color: #e5e7eb;
-            padding: 20px;
-        }
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: #e5e7eb;
+    padding: 20px;
+}
 
-        .container {
-            max-width: 750px;
-            margin: auto;
-            background: #111827;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,255,150,0.2);
-        }
+.container {
+    max-width: 750px;
+    margin: auto;
+    background: #111827;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,255,150,0.2);
+}
 
-        h2 {
-            text-align: center;
-            color: #22c55e;
-        }
+h2 {
+    text-align: center;
+    color: #22c55e;
+}
 
-        input, button {
-            padding: 10px;
-            width: 100%;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: none;
-            background: #1f2937;
-            color: white;
-        }
+input, button {
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: none;
+    background: #1f2937;
+    color: white;
+}
 
-        button {
-            background: linear-gradient(45deg, #22c55e, #16a34a);
-            cursor: pointer;
-        }
+button {
+    background: linear-gradient(45deg, #22c55e, #16a34a);
+    cursor: pointer;
+}
 
-        button:hover {
-            transform: scale(1.02);
-        }
+button:hover {
+    transform: scale(1.02);
+}
 
-        .soal {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #1f2937;
-            border-radius: 10px;
-            border-left: 5px solid #22c55e;
-        }
+/* BOX SOAL */
+.soal {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #1f2937;
+    border-radius: 10px;
+    border-left: 5px solid #22c55e;
+}
 
-        label {
-            display: block;
-            margin: 5px 0;
-            cursor: pointer;
-        }
+.soal p {
+    margin-bottom: 10px;
+}
 
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            background: #022c22;
-            color: #4ade80;
-            text-align: center;
-            display: none;
-        }
-    </style>
+/* OPSI */
+.opsi {
+    margin-top: 10px;
+}
+
+.opsi label {
+    display: grid;
+    grid-template-columns: 20px 25px 1fr;
+    align-items: start;
+    gap: 8px;
+    margin: 8px 0;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+/* RADIO */
+.opsi input[type="radio"] {
+    margin-top: 4px;
+}
+
+/* HURUF */
+.huruf {
+    font-weight: bold;
+}
+
+/* TEKS */
+.teks {
+    line-height: 1.4;
+}
+
+/* HOVER */
+.opsi label:hover {
+    background: #064e3b;
+}
+
+/* SELECTED */
+.opsi label:has(input:checked) {
+    background: #065f46;
+    border: 1px solid #22c55e;
+}
+
+/* HASIL */
+.result {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    background: #022c22;
+    color: #4ade80;
+    text-align: center;
+    display: none;
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-    <a href="encrypt.html">
-        <button>🔒 Halaman Encrypt Soal</button>
-    </a>
+<a href="encrypt.html">
+    <button>🔒 Halaman Encrypt Soal</button>
+</a>
 
-    <h2>🔐 Kuis Terenkripsi</h2>
+<h2>🔐 Kuis Terenkripsi</h2>
 
-    <input type="text" id="nama" placeholder="Nama Peserta">
-    <input type="password" id="kunci" placeholder="Masukkan Password">
+<input type="text" id="nama" placeholder="Nama Peserta">
+<input type="password" id="kunci" placeholder="Masukkan Password">
 
-    <input type="file" id="fileInput" accept=".txt">
+<input type="file" id="fileInput" accept=".txt">
 
-    <button id="btnLoad">🔓 Load Soal</button>
+<button id="btnLoad">🔓 Load Soal</button>
 
-    <form id="quizForm"></form>
+<form id="quizForm"></form>
 
-    <button id="btnSubmit" style="display:none;">🚀 Kirim Jawaban</button>
+<button id="btnSubmit" style="display:none;">🚀 Kirim Jawaban</button>
 
-    <div class="result" id="hasil"></div>
+<div class="result" id="hasil"></div>
 
 </div>
 
 <script>
 let dataSoal = [];
 
-// 🔓 LOAD + DECRYPT
+// LOAD + DECRYPT
 document.getElementById("btnLoad").addEventListener("click", function () {
 
     const file = document.getElementById("fileInput").files[0];
@@ -125,49 +168,31 @@ document.getElementById("btnLoad").addEventListener("click", function () {
         try {
             let encryptedData = e.target.result;
 
-            // ❗ JANGAN HAPUS / UBAH DATA
-            // encryptedData = encryptedData.replace(/\s/g, "");
-
-            // 🔐 DECRYPT
             const bytes = CryptoJS.AES.decrypt(encryptedData, kunci);
             const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
 
-            console.log("HASIL DECRYPT:", decryptedString);
-
-            // ❗ VALIDASI
             if (!decryptedString) {
-                alert("❌ Decrypt gagal! Password salah atau file rusak.");
-                return;
-            }
-
-            if (!decryptedString.startsWith("[") && !decryptedString.startsWith("{")) {
-                alert("❌ Format bukan JSON!");
-                console.log(decryptedString);
+                alert("❌ Password salah atau file rusak!");
                 return;
             }
 
             dataSoal = JSON.parse(decryptedString);
 
-            alert("✅ Berhasil membuka soal!");
+            alert("✅ Soal berhasil dibuka!");
 
             tampilkanSoal();
             document.getElementById("btnSubmit").style.display = "block";
 
         } catch (err) {
             console.error(err);
-            alert("❌ Gagal decrypt!\n\nKemungkinan:\n- Password salah\n- File rusak\n- Format JSON salah");
+            alert("❌ Gagal decrypt!");
         }
-    };
-
-    reader.onerror = function () {
-        alert("Gagal membaca file!");
     };
 
     reader.readAsText(file, "UTF-8");
 });
 
-
-// 📄 TAMPILKAN SOAL
+// TAMPILKAN SOAL
 function tampilkanSoal() {
     let form = document.getElementById("quizForm");
     form.innerHTML = "";
@@ -180,11 +205,15 @@ function tampilkanSoal() {
 
         soal.opsi.forEach((ops, i) => {
             let huruf = ['a','b','c','d'][i];
+
             div.innerHTML += `
-                <label>
-                    <input type="radio" name="q${index}" value="${huruf}">
-                    ${ops}
-                </label>
+                <div class="opsi">
+                    <label>
+                        <input type="radio" name="q${index}" value="${huruf}">
+                        <span class="huruf">${huruf}.</span>
+                        <span class="teks">${ops}</span>
+                    </label>
+                </div>
             `;
         });
 
@@ -192,8 +221,7 @@ function tampilkanSoal() {
     });
 }
 
-
-// 🎯 HITUNG NILAI
+// HITUNG NILAI
 document.getElementById("btnSubmit").addEventListener("click", function () {
 
     const nama = document.getElementById("nama").value.trim();
